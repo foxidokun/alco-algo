@@ -2,3 +2,7 @@ cmake-build-debug
 .idea
 main.c
 CMakeLists.txt
+bad*
+*.data
+test.c
+dump/
