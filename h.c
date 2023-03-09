@@ -14,9 +14,10 @@
 
 typedef unsigned int uint;
 
-#define panic_if_not(action, expected_res)                                     \
+#define check_input(action, expected_res)                                     \
     {                                                                          \
-        if ((action) != expected_res) {                                        \
+        if ((action) != expected_res) {                                       \
+            fprintf (stderr, "Scanf error: Expected %d args\n", expected_res);                                                                  \
             return -1;                                                         \
         }                                                                      \
     }
@@ -59,7 +60,7 @@ static inline void swap(uint *lhs, uint *rhs);
 int main() {
     uint n, k;
     uint a_min_two, a_min_one;
-    panic_if_not(scanf("%u%u%u%u", &n, &k, &a_min_two, &a_min_one), 4);
+    check_input(scanf("%u%u%u%u", &n, &k, &a_min_two, &a_min_one), 4);
 
     srand(time(NULL));
     struct vector_t vec;
