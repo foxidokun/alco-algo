@@ -113,6 +113,13 @@ void vector_push(struct vector_t *self, uint val) {
 // ---------------------------------------------------------------------------------------------------------------------
 
 uint k_stat(uint *array, uint size, uint k) {
+    assert (size > 0 && "Invalid call: empty array");
+
+    if (size == 1) {
+        assert (k == 0 && "Invalid call: k is out f borders");
+        return array[0];
+    }
+
     if (size == 2) {
         assert(k < 2 && "Invalid call: k is out of borders");
         if (k == 0) {
