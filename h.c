@@ -14,12 +14,12 @@
 
 typedef unsigned int uint;
 
-#define panic_if_not(action, expected_res) { \
-    if ((action) != expected_res) {          \
-        return -1;                           \
-    }                                        \
-}
-
+#define panic_if_not(action, expected_res)                                     \
+    {                                                                          \
+        if ((action) != expected_res) {                                        \
+            return -1;                                                         \
+        }                                                                      \
+    }
 
 #define MIN(lhs, rhs) (((lhs) > (rhs)) ? (rhs) : (lhs))
 #define MAX(lhs, rhs) ((lhs) < (rhs)) ? (rhs) : (lhs)
@@ -59,7 +59,7 @@ static inline void swap(uint *lhs, uint *rhs);
 int main() {
     uint n, k;
     uint a_min_two, a_min_one;
-    panic_if_not (scanf("%u%u%u%u", &n, &k, &a_min_two, &a_min_one), 4);
+    panic_if_not(scanf("%u%u%u%u", &n, &k, &a_min_two, &a_min_one), 4);
 
     srand(time(NULL));
     struct vector_t vec;
@@ -80,8 +80,7 @@ int main() {
         a_min_one = a_current;
     }
 
-
-    printf ("%u\n", k_stat(vec.data, n, k - 1));
+    printf("%u\n", k_stat(vec.data, n, k - 1));
 
     vector_free(&vec);
     return 0;
@@ -95,12 +94,10 @@ void vector_init(struct vector_t *self, uint capacity) {
     self->size = 0;
     self->capacity = capacity;
 
-    self->data = (uint *) calloc(capacity, sizeof(uint));
+    self->data = (uint *)calloc(capacity, sizeof(uint));
 }
 
-void vector_free(struct vector_t *self) {
-    free(self->data);
-}
+void vector_free(struct vector_t *self) { free(self->data); }
 
 void vector_push(struct vector_t *self, uint val) {
     if (self->size == self->capacity) {
@@ -116,7 +113,7 @@ void vector_push(struct vector_t *self, uint val) {
 
 uint k_stat(uint *array, uint size, uint k) {
     if (size == 2) {
-        assert (k < 2);
+        assert(k < 2);
         if (k == 0) {
             return MIN(array[0], array[1]);
         } else {
@@ -136,18 +133,20 @@ uint k_stat(uint *array, uint size, uint k) {
 }
 
 uint partition(uint *array, uint size) {
-    if (size == 1) { return 0; }
+    if (size == 1) {
+        return 0;
+    }
 
     uint indx = rand() % size;
     swap(array + indx, array + size - 1);
-    uint pivot = array[size-1];
+    uint pivot = array[size - 1];
 
-    int i = - 1;
+    int i = -1;
 
     for (uint j = 0; j <= size - 2; j++) {
         if (array[j] < pivot) {
             i++;
-            swap(array+i, array+j);
+            swap(array + i, array + j);
         }
     }
 
