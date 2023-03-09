@@ -8,8 +8,6 @@
 
 const int CMD_BUF_SIZE = 64;
 
-#define loop while (1)
-
 #ifdef DEBUG
 #define memory_alloc(count, size) calloc(count, size)
 #else
@@ -74,7 +72,7 @@ int main() {
     struct stack stk = {.top = NULL, .size = 0};
     stack_init(&stk);
 
-    loop {
+    while (1) {
         if (scanf("%s", cmd_buf) != 1) {
             fprintf(stderr, "Wrong input");
             return NOT_STRING_CMD;
