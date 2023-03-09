@@ -2,14 +2,14 @@
 #include <stdlib.h>
 #include <string.h>
 
-//#define NDEBUG
+// #define NDEBUG
 
 #include <assert.h>
 
 #ifndef NDEBUG
 
-#include <errno.h>
 #include "fibheap_graph_consts.c.h"
+#include <errno.h>
 
 #endif
 
@@ -19,11 +19,12 @@
 
 typedef unsigned int uint;
 
-#define panic_if_not(action, expected_res) { \
-    if ((action) != expected_res) {          \
-        abort();                             \
-    }                                        \
-}
+#define panic_if_not(action, expected_res)                                     \
+    {                                                                          \
+        if ((action) != expected_res) {                                        \
+            abort();                                                           \
+        }                                                                      \
+    }
 
 #define MIN(lhs, rhs) (((lhs) > (rhs)) ? (rhs) : (lhs))
 #define MAX(lhs, rhs) ((lhs) < (rhs)) ? (rhs) : (lhs)
@@ -78,9 +79,9 @@ void free_node(struct Node *self);
 
 void fibheap_insert(struct FibHeap *self, int value);
 
-int fibheap_extract_min (struct FibHeap *self);
+int fibheap_extract_min(struct FibHeap *self);
 
-void fibheap_decrease_key(struct FibHeap *self, struct Node* node, int delta);
+void fibheap_decrease_key(struct FibHeap *self, struct Node *node, int delta);
 
 void fibheap_consolidate(struct FibHeap *self);
 
@@ -95,7 +96,7 @@ void degarray_put(struct DegArray *self, struct Node *node);
 // Library functions
 struct Node *merge_subtree(struct Node *lhs, struct Node *rhs);
 
-void extract_subtree (struct FibHeap *self, struct Node *node);
+void extract_subtree(struct FibHeap *self, struct Node *node);
 
 void insert_near(struct Node *pos, struct Node *node);
 
@@ -137,7 +138,6 @@ int main() {
     return 0;
 }
 
-
 // ---------------------------------------------------------------------------------------------------------------------
 // ---------------------------------------------------------------------------------------------------------------------
 // Heap Implementation
@@ -155,7 +155,8 @@ void fibheap_init(struct FibHeap *self) {
 
 /// Return initialized node with given value
 struct Node *new_node(int value) {
-    struct Node *new = calloc(1, sizeof(struct Node)); // DO NOT CHANGE TO MALLOC
+    struct Node *new =
+        calloc(1, sizeof(struct Node)); // DO NOT CHANGE TO MALLOC
 
     new->value = value;
     new->left = new;
@@ -164,9 +165,7 @@ struct Node *new_node(int value) {
     return new;
 }
 
-void free_node(struct Node *self) {
-    free (self);
-}
+void free_node(struct Node *self) { free(self); }
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Insert
@@ -196,7 +195,7 @@ void fibheap_insert(struct FibHeap *self, int value) {
 // ---------------------------------------------------------------------------------------------------------------------
 // Extract Min
 // ---------------------------------------------------------------------------------------------------------------------
-int fibheap_extract_min (struct FibHeap *self) {
+int fibheap_extract_min(struct FibHeap *self) {
     int val = self->min->value;
 
     if (self->size == 1) {
@@ -231,21 +230,20 @@ int fibheap_extract_min (struct FibHeap *self) {
         self->min->right->left = self->min->left;
     }
 
-
     self->num_trees--;
     self->size--;
     struct Node *new_min_node = self->min->left;
     free_node(self->min);
     self->min = new_min_node;
 
-    fibheap_consolidate (self);
+    fibheap_consolidate(self);
     return val;
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Decrease Key
 // ---------------------------------------------------------------------------------------------------------------------
-void fibheap_decrease_key(struct FibHeap *self, struct Node* node, int delta) {
+void fibheap_decrease_key(struct FibHeap *self, struct Node *node, int delta) {
     node->value -= delta;
 
     if (node->parent == NULL) {
@@ -279,7 +277,7 @@ void fibheap_consolidate(struct FibHeap *self) {
     struct DegArray degs;
     degarray_init(&degs, START_DEG_CAPACITY);
 
-    struct Node *cur_node     = self->min;
+    struct Node *cur_node = self->min;
     struct Node *new_min_node = self->min;
     struct Node *conflicting_node = NULL;
 
@@ -312,9 +310,7 @@ void degarray_init(struct DegArray *self, size_t capacity) {
     self->data = calloc(capacity, sizeof(struct Node *));
 }
 
-void degarray_free(struct DegArray *self) {
-    free(self->data);
-}
+void degarray_free(struct DegArray *self) { free(self->data); }
 
 struct Node *degarray_extract(struct DegArray *self, size_t pos) {
     if (pos >= self->capacity) {
@@ -356,7 +352,8 @@ void graph_dump(struct FibHeap *self) {
             top_node = top_node->right;
         }
     } else {
-        fprintf (stream, "node_null[label = \"{null}\", fillcolor=\"lightblue\", color=\"red\"]");
+        fprintf(stream, "node_null[label = \"{null}\", "
+                        "fillcolor=\"lightblue\", color=\"red\"]");
     }
 
     fprintf(stream, "}");
@@ -376,7 +373,7 @@ struct Node *merge_subtree(struct Node *lhs, struct Node *rhs) {
         rhs = tmp;
     }
 
-    assert (lhs->value <= rhs->value && "Invalid logic");
+    assert(lhs->value <= rhs->value && "Invalid logic");
 
     int lhs_empty = (lhs->child == NULL);
 
@@ -391,7 +388,7 @@ struct Node *merge_subtree(struct Node *lhs, struct Node *rhs) {
     rhs->right->left = rhs->left;
     lhs->degree++;
 
-    assert (rhs->parent == NULL && "He left home without saying goodbye...");
+    assert(rhs->parent == NULL && "He left home without saying goodbye...");
     rhs->parent = lhs;
 
     if (lhs_empty) {
@@ -403,8 +400,8 @@ struct Node *merge_subtree(struct Node *lhs, struct Node *rhs) {
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
-void extract_subtree (struct FibHeap *self, struct Node *node) {
-    assert (node->parent != NULL && "can't extract top subtree");
+void extract_subtree(struct FibHeap *self, struct Node *node) {
+    assert(node->parent != NULL && "can't extract top subtree");
 
     if (node->parent->child == node) {
         if (node->parent->degree > 1) {
@@ -459,12 +456,14 @@ FILE *get_dump_file() {
     return dump_file;
 }
 
-
 /// Dump node with all childs
 void dump_node(FILE *stream, struct Node *self) {
     fprintf(stream,
-            "node_%p [label = \"{addr: %p|val: %i|deg: %u|left: %p|right: %p| child: %p|parent: %p}\", fillcolor=\"lightblue\", color=\"darkblue\"];\n",
-            self, self, self->value, self->degree, self->left, self->right, self->child, self->parent);
+            "node_%p [label = \"{addr: %p|val: %i|deg: %u|left: %p|right: %p| "
+            "child: %p|parent: %p}\", fillcolor=\"lightblue\", "
+            "color=\"darkblue\"];\n",
+            self, self, self->value, self->degree, self->left, self->right,
+            self->child, self->parent);
 
     fprintf(stream, "node_%p -> node_%p;\n", self, self->right);
     fprintf(stream, "node_%p -> node_%p;\n", self, self->left);
@@ -479,7 +478,10 @@ void dump_node(FILE *stream, struct Node *self) {
         fprintf(stream, "node_%p -> node_%p;\n", self, child);
 
         if (self == child) {
-            fprintf (stream, "node_%p_br [label = \"{BROKEN}\", fillcolor=\"lightblue\", color=\"darkblue\"];\n", self);
+            fprintf(stream,
+                    "node_%p_br [label = \"{BROKEN}\", "
+                    "fillcolor=\"lightblue\", color=\"darkblue\"];\n",
+                    self);
             fprintf(stream, "node_%p <-> node_%p_br;\n", self, self->right);
         }
 
