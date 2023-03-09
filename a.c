@@ -1,6 +1,6 @@
 #include <stdio.h>
-#include <string.h>
 #include <stdlib.h>
+#include <string.h>
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Const & Define
@@ -13,7 +13,7 @@ const int CMD_BUF_SIZE = 64;
 #ifdef DEBUG
 #define memory_alloc(count, size) calloc(count, size)
 #else
-#define memory_alloc(count, size) malloc(count*size)
+#define memory_alloc(count, size) malloc(count *size)
 #endif
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -30,11 +30,7 @@ struct stack {
     size_t size;
 };
 
-enum ERRORS {
-    WRONG_CMD = 1,
-    NOT_INT,
-    NOT_STRING_CMD
-};
+enum ERRORS { WRONG_CMD = 1, NOT_INT, NOT_STRING_CMD };
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Prototypes
@@ -66,9 +62,9 @@ void stack_node_recursive_dtor(struct stack_node *current_node);
 // User Interface
 // ---------------------------------------------------------------------------------------------------------------------
 
-#define route(word, action)              \
-    if (strcmp(cmd_buf, word) == 0) {    \
-        action;                          \
+#define route(word, action)                                                    \
+    if (strcmp(cmd_buf, word) == 0) {                                          \
+        action;                                                                \
     } else
 
 int main() {
@@ -77,7 +73,6 @@ int main() {
 
     struct stack stk = {.top = NULL, .size = 0};
     stack_init(&stk);
-
 
     loop {
         if (scanf("%s", cmd_buf) != 1) {
@@ -107,7 +102,6 @@ int main() {
             fprintf(stderr, "Wrong input: unknown command");
             return WRONG_CMD;
         }
-
     }
 
     stack_finish(&stk);
@@ -153,9 +147,7 @@ void stack_back(struct stack *self) {
     }
 }
 
-void stack_size(struct stack *self) {
-    printf("%lu\n", self->size);
-}
+void stack_size(struct stack *self) { printf("%lu\n", self->size); }
 
 void stack_clear(struct stack *self) {
     stack_node_recursive_dtor(self->top);
@@ -165,24 +157,21 @@ void stack_clear(struct stack *self) {
     printf("ok\n");
 }
 
-void stack_finish(struct stack *self) {
-    stack_node_recursive_dtor(self->top);
-}
+void stack_finish(struct stack *self) { stack_node_recursive_dtor(self->top); }
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Node Interface
 // ---------------------------------------------------------------------------------------------------------------------
 
 struct stack_node *stack_node_ctor(struct stack_node *next, int val) {
-    struct stack_node *new_node = (struct stack_node *) memory_alloc(1, sizeof(struct stack_node));
+    struct stack_node *new_node =
+        (struct stack_node *)memory_alloc(1, sizeof(struct stack_node));
     new_node->next = next;
     new_node->value = val;
     return new_node;
 }
 
-void stack_node_dtor(struct stack_node *self) {
-    free(self);
-}
+void stack_node_dtor(struct stack_node *self) { free(self); }
 
 void stack_node_recursive_dtor(struct stack_node *current_node) {
     struct stack_node *next_node;
