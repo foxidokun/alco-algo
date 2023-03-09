@@ -32,9 +32,10 @@ const unsigned int CMD_BUF_SIZE = 64;
 
 typedef unsigned int uint;
 
-#define panic_if_not(action, expected_res)                                     \
+#define check_input(action, expected_res)                                      \
     {                                                                          \
         if ((action) != expected_res) {                                        \
+            fprintf(stderr, "Scanf error: Expected %d args\n", expected_res);  \
             return -1;                                                         \
         }                                                                      \
     }
@@ -95,14 +96,14 @@ int main() {
     long int val;
 
     uint n_cmd = 0;
-    panic_if_not(scanf("%u", &n_cmd), 1);
+    check_input(scanf("%u", &n_cmd), 1);
     heap_init(&heap, START_CAPACITY, n_cmd);
 
     for (uint i_cmd = 0; i_cmd < n_cmd; ++i_cmd) {
-        panic_if_not(scanf("%s", cmd_buf), 1);
+        check_input(scanf("%s", cmd_buf), 1);
 
         if (strcmp(cmd_buf, "insert") == 0) {
-            panic_if_not(scanf("%li", &val), 1);
+            check_input(scanf("%li", &val), 1);
 
             heap_insert(&heap, val, i_cmd);
         } else if (strcmp(cmd_buf, "getMin") == 0) {
@@ -111,7 +112,7 @@ int main() {
             heap_extract_min(&heap);
         } else if (strcmp(cmd_buf, "decreaseKey") == 0) {
             uint pos;
-            panic_if_not(scanf("%u%li", &pos, &val), 2);
+            check_input(scanf("%u%li", &pos, &val), 2);
             heap_decrease_key_by_request(&heap, pos - 1, val);
         }
     }
