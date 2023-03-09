@@ -10,13 +10,14 @@
 // ---------------------------------------------------------------------------------------------------------------------
 
 #ifndef NDEBUG
-    #define heap_assert(heap) { \
-        if (!verify_heap(heap)) { \
-            fprintf (stderr, "Verification failed at line %d", __LINE__); \
-        }   \
+#define heap_assert(heap)                                                      \
+    {                                                                          \
+        if (!verify_heap(heap)) {                                              \
+            fprintf(stderr, "Verification failed at line %d", __LINE__);       \
+        }                                                                      \
     }
 #else
-    #define heap_assert(heap) ((void) (0))
+#define heap_assert(heap) ((void)(0))
 #endif
 
 #ifndef NDEBUG
@@ -31,12 +32,12 @@ const unsigned int CMD_BUF_SIZE = 64;
 
 typedef unsigned int uint;
 
-#define panic_if_not(action, expected_res) { \
-    if ((action) != expected_res) {          \
-        return -1;                           \
-    }                                        \
-}
-
+#define panic_if_not(action, expected_res)                                     \
+    {                                                                          \
+        if ((action) != expected_res) {                                        \
+            return -1;                                                         \
+        }                                                                      \
+    }
 
 #define MIN(lhs, rhs) (((lhs) > (rhs)) ? (rhs) : (lhs))
 #define MAX(lhs, rhs) ((lhs) < (rhs)) ? (rhs) : (lhs)
@@ -97,12 +98,11 @@ int main() {
     panic_if_not(scanf("%u", &n_cmd), 1);
     heap_init(&heap, START_CAPACITY, n_cmd);
 
-
     for (uint i_cmd = 0; i_cmd < n_cmd; ++i_cmd) {
-        panic_if_not (scanf("%s", cmd_buf), 1);
+        panic_if_not(scanf("%s", cmd_buf), 1);
 
         if (strcmp(cmd_buf, "insert") == 0) {
-            panic_if_not (scanf("%li", &val), 1);
+            panic_if_not(scanf("%li", &val), 1);
 
             heap_insert(&heap, val, i_cmd);
         } else if (strcmp(cmd_buf, "getMin") == 0) {
@@ -112,7 +112,7 @@ int main() {
         } else if (strcmp(cmd_buf, "decreaseKey") == 0) {
             uint pos;
             panic_if_not(scanf("%u%li", &pos, &val), 2);
-            heap_decrease_key_by_request(&heap, pos - 1,val);
+            heap_decrease_key_by_request(&heap, pos - 1, val);
         }
     }
 
@@ -125,15 +125,16 @@ int main() {
 // ---------------------------------------------------------------------------------------------------------------------
 
 void heap_init(struct heap_t *self, uint capacity, uint n_requests) {
-    self->data = (struct heap_elem_t *) calloc(capacity, sizeof(struct heap_elem_t));
-    self->requests_index = (uint *) calloc(n_requests, sizeof(uint));
+    self->data =
+        (struct heap_elem_t *)calloc(capacity, sizeof(struct heap_elem_t));
+    self->requests_index = (uint *)calloc(n_requests, sizeof(uint));
 
     self->capacity = capacity;
     self->size = 0;
 }
 
 void heap_free(struct heap_t *self) {
-    heap_assert (self);
+    heap_assert(self);
 
     free(self->data);
     free(self->requests_index);
@@ -142,10 +143,11 @@ void heap_free(struct heap_t *self) {
 // ---------------------------------------------------------------------------------------------------------------------
 
 void heap_insert(struct heap_t *self, long int val, uint id) {
-    heap_assert (self);
+    heap_assert(self);
 
     if (self->size == self->capacity) {
-        self->data = (struct heap_elem_t *) realloc(self->data, 2 * self->capacity * sizeof(struct heap_elem_t));
+        self->data = (struct heap_elem_t *)realloc(
+            self->data, 2 * self->capacity * sizeof(struct heap_elem_t));
         self->capacity *= 2;
     }
 
@@ -156,17 +158,17 @@ void heap_insert(struct heap_t *self, long int val, uint id) {
 
     heap_sift_up(self, self->size - 1);
 
-    heap_assert (self);
+    heap_assert(self);
 }
 
 long int heap_get_min(struct heap_t *self) {
-    heap_assert (self);
+    heap_assert(self);
 
     return self->data[0].val;
 }
 
 void heap_extract_min(struct heap_t *self) {
-    heap_assert (self);
+    heap_assert(self);
 
     self->size--;
 
@@ -175,19 +177,21 @@ void heap_extract_min(struct heap_t *self) {
         heap_sift_down(self, 0);
     }
 
-    heap_assert (self);
+    heap_assert(self);
 }
 
-void heap_decrease_key_by_request(struct heap_t *self, uint id, long int delta) {
-    heap_assert (self);
+void heap_decrease_key_by_request(struct heap_t *self, uint id,
+                                  long int delta) {
+    heap_assert(self);
 
     uint index = self->requests_index[id];
-    assert (self->data[index].request_id == id && "broken index, please contact technical support if error persists");
+    assert(self->data[index].request_id == id &&
+           "broken index, please contact technical support if error persists");
 
     self->data[index].val -= delta;
     heap_sift_up(self, index);
 
-    heap_assert (self);
+    heap_assert(self);
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -222,7 +226,8 @@ static void heap_sift_down(struct heap_t *self, uint indx) {
         uint right_indx = indx * 2 + 2;
         uint min_indx = indx * 2 + 1; // left by default
 
-        if (right_indx < self->size && self->data[right_indx].val < self->data[min_indx].val) {
+        if (right_indx < self->size &&
+            self->data[right_indx].val < self->data[min_indx].val) {
             min_indx = right_indx;
         }
 
@@ -248,26 +253,30 @@ static void heap_swap(struct heap_t *self, uint left, uint right) {
     self->requests_index[rhs_id] = id_tmp;
 }
 
-
 // ---------------------------------------------------------------------------------------------------------------------
 // debug section
 // ---------------------------------------------------------------------------------------------------------------------
 
 #ifndef NDEBUG
-#define check(cond) { \
-if (!(cond)) {        \
-    fprintf (stderr, "Condition " #cond " failed.");                  \
-    return 0;  \
-}}
+#define check(cond)                                                            \
+    {                                                                          \
+        if (!(cond)) {                                                         \
+            fprintf(stderr, "Condition " #cond " failed.");                    \
+            return 0;                                                          \
+        }                                                                      \
+    }
 
 static int verify_heap(struct heap_t *self) {
-    check (self->size <= self->capacity && "Broken size");
+    check(self->size <= self->capacity && "Broken size");
 
-    check (self->requests_index[self->data[0].request_id] == 0 && "Broken index");
+    check(self->requests_index[self->data[0].request_id] == 0 &&
+          "Broken index");
 
     for (uint i = 1; i < self->size; ++i) {
-        check (self->data[i].val > self->data[(i-1)/2].val && "Invalid order");
-        check (self->requests_index[self->data[i].request_id] == i && "Broken index");
+        check(self->data[i].val > self->data[(i - 1) / 2].val &&
+              "Invalid order");
+        check(self->requests_index[self->data[i].request_id] == i &&
+              "Broken index");
     }
 
     return 1;
