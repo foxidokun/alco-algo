@@ -26,8 +26,8 @@ typedef unsigned int uint;
         }                                                                      \
     }
 
-#define MIN(lhs, rhs) ((lhs) > (rhs)) ? (rhs) : (lhs)
-#define MAX(lhs, rhs) ((lhs) < (rhs)) ? (rhs) : (lhs)
+#define MIN_MACRO(lhs, rhs) ((lhs) > (rhs)) ? (rhs) : (lhs)
+#define MAX_MACRO(lhs, rhs) ((lhs) < (rhs)) ? (rhs) : (lhs)
 
 #define INDX(val) ((val) % self->capacity)
 
@@ -161,7 +161,7 @@ static void queue_push(struct queue *self, int val) {
 
     if (INDX(self->tail - self->separator) > 0) {
         self->data[self->tail].known_min =
-            MIN(val, self->data[INDX(self->tail - 1)].known_min);
+                        MIN_MACRO(val, self->data[INDX(self->tail - 1)].known_min);
     } else {
         self->data[self->tail].known_min = val;
         self->separator = self->tail;
@@ -234,15 +234,15 @@ static int queue_min(struct queue *self, int *error) {
         *error = 0;
     }
 
-    return MIN(self->data[INDX(self->tail - 1)].known_min,
-               self->data[self->head].known_min);
+    return MIN_MACRO(self->data[INDX(self->tail - 1)].known_min,
+                     self->data[self->head].known_min);
 }
 
 static void queue_move_sep(struct queue *self) {
     int min_val = self->data[INDX(self->tail - 1)].data;
 
     for (uint i = 0; i < self->size; ++i) {
-        min_val = MIN(min_val, self->data[INDX(self->tail - i - 1)].data);
+        min_val = MIN_MACRO(min_val, self->data[INDX(self->tail - i - 1)].data);
         self->data[INDX(self->tail - i - 1)].known_min = min_val;
     }
 
