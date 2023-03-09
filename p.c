@@ -181,9 +181,13 @@ void heap_extract_min(struct heap_t *self) {
     heap_assert(self);
 }
 
-void heap_decrease_key_by_request(struct heap_t *self, uint id,
-                                  long int delta) {
+void heap_decrease_key_by_request(struct heap_t *self, uint id, long int delta) {
     heap_assert(self);
+
+    if (id >= self->size || self->data[self->requests_index[id]].request_id != id) {
+        fprintf(stderr, "Attempt to decrease key for non-existent element with request ID %u", id);
+        return;
+    }
 
     uint index = self->requests_index[id];
     assert(self->data[index].request_id == id &&
