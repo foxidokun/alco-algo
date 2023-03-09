@@ -14,17 +14,17 @@ const unsigned int CMD_BUF_SIZE = 64;
 #ifdef DEBUG
 #define memory_alloc(count, size) calloc(count, size)
 #else
-#define memory_alloc(count, size) malloc(count*size)
+#define memory_alloc(count, size) malloc(count *size)
 #endif
 
 typedef unsigned int uint;
 
-#define panic_if_not(action, expected_res) { \
-    if ((action) != expected_res) {          \
-        return -1;                           \
-    }                                        \
-}
-
+#define panic_if_not(action, expected_res)                                     \
+    {                                                                          \
+        if ((action) != expected_res) {                                        \
+            return -1;                                                         \
+        }                                                                      \
+    }
 
 #define MIN(lhs, rhs) ((lhs) > (rhs)) ? (rhs) : (lhs)
 #define MAX(lhs, rhs) ((lhs) < (rhs)) ? (rhs) : (lhs)
@@ -35,8 +35,7 @@ typedef unsigned int uint;
 // Struct Definition
 // ---------------------------------------------------------------------------------------------------------------------
 
-struct pair
-{
+struct pair {
     int data;
     int known_min;
 };
@@ -48,7 +47,6 @@ struct pair
 ///      1           2
 /// 1) Known min = min (data[self ... sep])
 /// 2) Known min = min (data[sep ... self])
-
 
 struct queue {
     struct pair *data;
@@ -86,7 +84,8 @@ static void queue_move_sep(struct queue *self);
 // ---------------------------------------------------------------------------------------------------------------------
 
 int main(void) {
-    struct queue queue = {.data = NULL, .capacity=0, .head=0, .tail=0, .size=0};
+    struct queue queue = {
+        .data = NULL, .capacity = 0, .head = 0, .tail = 0, .size = 0};
     queue_init(&queue);
 
     char cmd_buf[CMD_BUF_SIZE];
@@ -96,10 +95,10 @@ int main(void) {
     panic_if_not(scanf("%i", &n_cmd), 1);
 
     for (int i_cmd = 0; i_cmd < n_cmd; ++i_cmd) {
-        panic_if_not (scanf("%s", cmd_buf), 1);
+        panic_if_not(scanf("%s", cmd_buf), 1);
 
         if (strcmp(cmd_buf, "enqueue") == 0) {
-            panic_if_not (scanf("%i", &val), 1);
+            panic_if_not(scanf("%i", &val), 1);
 
             queue_push(&queue, val);
             printf("ok\n");
@@ -120,10 +119,10 @@ int main(void) {
                 printf("%i\n", val);
             }
         } else if (strcmp(cmd_buf, "size") == 0) {
-            printf ("%u\n", queue.size);
+            printf("%u\n", queue.size);
         } else if (strcmp(cmd_buf, "clear") == 0) {
             queue_clear(&queue);
-            printf ("ok\n");
+            printf("ok\n");
         } else if (strcmp(cmd_buf, "min") == 0) {
             val = queue_min(&queue, &error);
 
@@ -135,7 +134,7 @@ int main(void) {
         }
     }
 
-    queue_finish (&queue);
+    queue_finish(&queue);
     return 0;
 }
 
@@ -144,16 +143,14 @@ int main(void) {
 // ---------------------------------------------------------------------------------------------------------------------
 
 static void queue_init(struct queue *self) {
-    self->data = memory_alloc (START_CAPACITY, sizeof(struct pair));
+    self->data = memory_alloc(START_CAPACITY, sizeof(struct pair));
 
     self->capacity = START_CAPACITY;
     self->tail = 0;
     self->head = 0;
 }
 
-static void queue_finish(struct queue *self) {
-    free(self->data);
-}
+static void queue_finish(struct queue *self) { free(self->data); }
 
 static void queue_push(struct queue *self, int val) {
     if (self->size == self->capacity) {
@@ -163,7 +160,8 @@ static void queue_push(struct queue *self, int val) {
     self->data[self->tail].data = val;
 
     if (INDX(self->tail - self->separator) > 0) {
-        self->data[self->tail].known_min = MIN(val, self->data[INDX(self->tail - 1)].known_min);
+        self->data[self->tail].known_min =
+            MIN(val, self->data[INDX(self->tail - 1)].known_min);
     } else {
         self->data[self->tail].known_min = val;
         self->separator = self->tail;
@@ -185,7 +183,7 @@ static int queue_pop(struct queue *self, int *error) {
     self->size--;
 
     if (self->head == self->separator) {
-        queue_move_sep (self);
+        queue_move_sep(self);
     }
 
     self->head = (self->head + 1) % self->capacity;
@@ -236,16 +234,15 @@ static int queue_min(struct queue *self, int *error) {
         *error = 0;
     }
 
-
-    return MIN(self->data[INDX(self->tail - 1)].known_min, self->data[self->head].known_min);
+    return MIN(self->data[INDX(self->tail - 1)].known_min,
+               self->data[self->head].known_min);
 }
-
 
 static void queue_move_sep(struct queue *self) {
     int min_val = self->data[INDX(self->tail - 1)].data;
 
     for (uint i = 0; i < self->size; ++i) {
-        min_val = MIN (min_val, self->data[INDX(self->tail - i - 1)].data);
+        min_val = MIN(min_val, self->data[INDX(self->tail - i - 1)].data);
         self->data[INDX(self->tail - i - 1)].known_min = min_val;
     }
 
