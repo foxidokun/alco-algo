@@ -167,7 +167,7 @@ static void queue_push(struct queue *self, int val) {
         self->separator = self->tail;
     }
 
-    self->tail = (self->tail + 1) % self->capacity;
+    self->tail = (++self->tail) % self->capacity;
     self->size++;
 }
 
@@ -186,7 +186,7 @@ static int queue_pop(struct queue *self, int *error) {
         queue_move_sep(self);
     }
 
-    self->head = (self->head + 1) % self->capacity;
+    self->head = (++self->head) % self->capacity;
     return val;
 }
 
