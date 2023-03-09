@@ -171,6 +171,8 @@ uint partition(uint *array, uint size) {
 static void vector_resize(struct vector_t *self) {
     self->data = realloc(self->data, 2 * self->capacity * sizeof(uint));
     self->capacity *= 2;
+
+    assert(self->data != NULL && "Failed to allocate memory");
 }
 
 static inline void swap(uint *lhs, uint *rhs) {
