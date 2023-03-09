@@ -21,8 +21,8 @@ typedef unsigned int uint;
         }                                                                      \
     }
 
-#define MIN(lhs, rhs) (((lhs) > (rhs)) ? (rhs) : (lhs))
-#define MAX(lhs, rhs) ((lhs) < (rhs)) ? (rhs) : (lhs)
+#define MIN_MACRO(lhs, rhs) (((lhs) > (rhs)) ? (rhs) : (lhs))
+#define MAX_MACRO(lhs, rhs) ((lhs) < (rhs)) ? (rhs) : (lhs)
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Struct Definition
@@ -115,9 +115,9 @@ uint k_stat(uint *array, uint size, uint k) {
     if (size == 2) {
         assert(k < 2);
         if (k == 0) {
-            return MIN(array[0], array[1]);
+            return MIN_MACRO(array[0], array[1]);
         } else {
-            return MAX(array[0], array[1]);
+            return MAX_MACRO(array[0], array[1]);
         }
     }
 
