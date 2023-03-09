@@ -98,7 +98,9 @@ void vector_init(struct vector_t *self, uint capacity) {
     self->data = (uint *)calloc(capacity, sizeof(uint));
 }
 
-void vector_free(struct vector_t *self) { free(self->data); }
+void vector_free(struct vector_t *self) {
+    free(self->data);
+}
 
 void vector_push(struct vector_t *self, uint val) {
     if (self->size == self->capacity) {
@@ -114,7 +116,7 @@ void vector_push(struct vector_t *self, uint val) {
 
 uint k_stat(uint *array, uint size, uint k) {
     if (size == 2) {
-        assert(k < 2);
+        assert(k < 2 && "Invalid call: k is out of borders");
         if (k == 0) {
             return MIN_MACRO(array[0], array[1]);
         } else {
@@ -134,6 +136,8 @@ uint k_stat(uint *array, uint size, uint k) {
 }
 
 uint partition(uint *array, uint size) {
+    assert (size > 0 && "Invalid call: size = 0");
+
     if (size == 1) {
         return 0;
     }
