@@ -10,8 +10,6 @@
 // Const & Define
 // ---------------------------------------------------------------------------------------------------------------------
 
-#define loop while (1)
-
 typedef unsigned int uint;
 
 #define check_input(action, expected_res)                                      \
