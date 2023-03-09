@@ -3,7 +3,7 @@
 #include <string.h>
 #include <time.h>
 
-//#define NDEBUG
+// #define NDEBUG
 #include <assert.h>
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -14,10 +14,10 @@
 
 typedef unsigned int uint;
 
-#define check_input(action, expected_res)                                     \
+#define check_input(action, expected_res)                                      \
     {                                                                          \
-        if ((action) != expected_res) {                                       \
-            fprintf (stderr, "Scanf error: Expected %d args\n", expected_res);                                                                  \
+        if ((action) != expected_res) {                                        \
+            fprintf(stderr, "Scanf error: Expected %d args\n", expected_res);  \
             return -1;                                                         \
         }                                                                      \
     }
