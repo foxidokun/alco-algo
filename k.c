@@ -163,5 +163,11 @@ static int intcmp(const void *lhs, const void *rhs) {
     int lhs_val = *(const int *)lhs;
     int rhs_val = *(const int *)rhs;
 
-    return (lhs_val > rhs_val) ? 1 : (lhs_val < rhs_val) ? -1 : 0;
+    if (lhs_val > rhs_val) {
+        return 1;
+    } else if (lhs_val < rhs_val) {
+        return -1;
+    } else {
+        return 0;
+    }
 }
