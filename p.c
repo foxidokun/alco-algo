@@ -99,21 +99,28 @@ int main() {
     check_input(scanf("%u", &n_cmd), 1);
     heap_init(&heap, START_CAPACITY, n_cmd);
 
+    uint pos;
     for (uint i_cmd = 0; i_cmd < n_cmd; ++i_cmd) {
         check_input(scanf("%s", cmd_buf), 1);
 
-        if (strcmp(cmd_buf, "insert") == 0) {
-            check_input(scanf("%li", &val), 1);
+        switch (cmd_buf[0]) {
+            case 'i':
+                check_input(scanf("%li", &val), 1);
+                heap_insert(&heap, val, i_cmd);
+                break;
 
-            heap_insert(&heap, val, i_cmd);
-        } else if (strcmp(cmd_buf, "getMin") == 0) {
-            printf("%li\n", heap_get_min(&heap));
-        } else if (strcmp(cmd_buf, "extractMin") == 0) {
-            heap_extract_min(&heap);
-        } else if (strcmp(cmd_buf, "decreaseKey") == 0) {
-            uint pos;
-            check_input(scanf("%u%li", &pos, &val), 2);
-            heap_decrease_key_by_request(&heap, pos - 1, val);
+            case 'g':
+                printf("%li\n", heap_get_min(&heap));
+                break;
+
+            case 'e':
+                heap_extract_min(&heap);
+                break;
+
+            case 'd':
+                check_input(scanf("%u%li", &pos, &val), 2);
+                heap_decrease_key_by_request(&heap, pos - 1, val);
+                break;
         }
     }
 
