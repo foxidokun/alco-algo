@@ -25,7 +25,7 @@ int main () {
     enki::TaskScheduler g_TS;
     g_TS.Initialize();
 
-    enki::TaskSet quadratic_sorts_tests(100, []( enki::TaskSetPartition range, uint32_t threadnum) {
+    enki::TaskSet quadratic_sorts_tests(100, []( enki::TaskSetPartition range, uint32_t) {
         for (size_t len = 1000 + range.start * 10000; len <= 10000 * range.end; len += 10000) {
             int *array = gen_rand_array(len);
 
@@ -38,7 +38,7 @@ int main () {
         }
     });
 
-    enki::TaskSet nlogn_sorts_tests(100, []( enki::TaskSetPartition range, uint32_t threadnum) {
+    enki::TaskSet nlogn_sorts_tests(100, []( enki::TaskSetPartition range, uint32_t) {
         for (size_t len = 1000 + range.start; len <= 100000 * range.end; len += 100000) {
             int *array = gen_rand_array(len);
 
@@ -67,7 +67,7 @@ int main () {
 /// Returns elapsed ms
 long bench_sorting_algo (const int * orig_array, size_t len, sort_func_t sort_algo) {
     struct timeval start, stop;
-    long elapsed_ms = 0;
+    long long unsigned int elapsed_us = 0;
     int *array = (int*) malloc(len * sizeof (int));
 
     for (int i = 0; i < ITERATION_NUM; ++i) {
@@ -77,13 +77,13 @@ long bench_sorting_algo (const int * orig_array, size_t len, sort_func_t sort_al
         sort_algo(array, len);
 
         gettimeofday(&stop, NULL);
-        elapsed_ms += (stop.tv_sec - start.tv_sec) * 1000 + (stop.tv_usec - start.tv_usec) / 1000;
+        elapsed_us += (stop.tv_sec - start.tv_sec) * 1000000 + (stop.tv_usec - start.tv_usec);
     }
 
     free (array);
 
-    elapsed_ms /= ITERATION_NUM;
-    return elapsed_ms;
+    elapsed_us /= ITERATION_NUM;
+    return elapsed_us;
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
