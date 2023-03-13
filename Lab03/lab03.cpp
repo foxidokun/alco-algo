@@ -40,9 +40,9 @@ int main () {
         printf("Quick Random Sort,%zu,%ld\n", len, bench_sorting_algo(array, len, qsort_random));
 
         printf("Merge Sort,%zu,%ld\n", len, bench_sorting_algo(array, len, merge_sort));
-        printf("Merge Sort,%zu,%ld\n", len, bench_sorting_algo(array, len, radix_sort));
-        fflush(stdout);
+        printf("Radix Sort,%zu,%ld\n", len, bench_sorting_algo(array, len, radix_sort));
 
+        fflush(stdout);
         free (array);
     }
 }
