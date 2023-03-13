@@ -4,6 +4,8 @@
 #include <string.h>
 #include <sys/time.h>
 #include "sorts.h"
+
+#include "enkiTS/src/TaskScheduler.h"
 #include "tests.h"
 
 const int ERROR = -1;
@@ -20,31 +22,42 @@ int main () {
 #ifdef TEST
     test_sorts();
 #endif
+    enki::TaskScheduler g_TS;
+    g_TS.Initialize();
 
-    for (size_t len = 1000; len <= 1000000; len += 10000) {
-        int *array = gen_rand_array(len);
+    enki::TaskSet quadratic_sorts_tests(100, []( enki::TaskSetPartition range, uint32_t threadnum) {
+        for (size_t len = 1000 + range.start * 10000; len <= 10000 * range.end; len += 10000) {
+            int *array = gen_rand_array(len);
 
-        printf("Insertion Sort,%zu,%ld\n", len, bench_sorting_algo(array, len, insertion_sort));
-        printf("Selection Sort,%zu,%ld\n", len, bench_sorting_algo(array, len, selection_sort));
-        printf("Bubble Sort,%zu,%ld\n",    len, bench_sorting_algo(array, len, bubble_sort));
-        fflush(stdout);
+            printf("Insertion Sort,%zu,%ld\n", len, bench_sorting_algo(array, len, insertion_sort));
+            printf("Selection Sort,%zu,%ld\n", len, bench_sorting_algo(array, len, selection_sort));
+            printf("Bubble Sort,%zu,%ld\n",    len, bench_sorting_algo(array, len, bubble_sort));
+            fflush(stdout);
 
-        free(array);
-    }
+            free(array);
+        }
+    });
 
-    for (size_t len = 1000; len <= 10000000; len += 100000) {
-        int *array = gen_rand_array(len);
+    enki::TaskSet nlogn_sorts_tests(100, []( enki::TaskSetPartition range, uint32_t threadnum) {
+        for (size_t len = 1000 + range.start; len <= 100000 * range.end; len += 100000) {
+            int *array = gen_rand_array(len);
 
-        printf("Quick Median Sort,%zu,%ld\n", len, bench_sorting_algo(array, len, qsort_median));
-        printf("Quick Central Sort,%zu,%ld\n", len, bench_sorting_algo(array, len, qsort_central));
-        printf("Quick Random Sort,%zu,%ld\n", len, bench_sorting_algo(array, len, qsort_random));
+            printf("Quick Median Sort,%zu,%ld\n", len, bench_sorting_algo(array, len, qsort_median));
+            printf("Quick Central Sort,%zu,%ld\n", len, bench_sorting_algo(array, len, qsort_central));
+            printf("Quick Random Sort,%zu,%ld\n", len, bench_sorting_algo(array, len, qsort_random));
 
-        printf("Merge Sort,%zu,%ld\n", len, bench_sorting_algo(array, len, merge_sort));
-        printf("Radix Sort,%zu,%ld\n", len, bench_sorting_algo(array, len, radix_sort));
+            printf("Merge Sort,%zu,%ld\n", len, bench_sorting_algo(array, len, merge_sort));
+            printf("Radix Sort,%zu,%ld\n", len, bench_sorting_algo(array, len, radix_sort));
 
-        fflush(stdout);
-        free (array);
-    }
+            fflush(stdout);
+            free (array);
+        }
+    });
+
+    g_TS.AddTaskSetToPipe( &quadratic_sorts_tests );
+    g_TS.AddTaskSetToPipe( &nlogn_sorts_tests );
+
+    g_TS.WaitforAll();
 }
 
 
