@@ -39,7 +39,7 @@ int main () {
     });
 
     enki::TaskSet nlogn_sorts_tests(100, []( enki::TaskSetPartition range, uint32_t) {
-        for (size_t len = 1000 + range.start; len <= 100000 * range.end; len += 100000) {
+        for (size_t len = 1000 + 100000 * range.start; len <= 100000 * range.end; len += 100000) {
             int *array = gen_rand_array(len);
 
             printf("Quick Median Sort,%zu,%ld\n", len, bench_sorting_algo(array, len, qsort_median));
