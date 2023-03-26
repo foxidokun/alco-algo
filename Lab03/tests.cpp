@@ -49,7 +49,9 @@ void test_sorts () {
     printf ("Starting tests...\n\n");
 
     _TEST(test_sort_func(bubble_sort));
-    _TEST(test_sort_func(insertion_sort));
+    _TEST(test_sort_func(insertion_sort_unoptimised));
+    _TEST(test_sort_func(insertion_sort_optimised));
+    _TEST(test_sort_func(insertion_sort_binsearch));
     _TEST(test_sort_func(selection_sort));
 
     _TEST(test_sort_func(qsort_central));

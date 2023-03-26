@@ -7,7 +7,9 @@ typedef void (*sort_func_t)(int* array, size_t len);
 
 void bubble_sort(int *array, size_t len);
 void selection_sort (int *array, size_t len);
-void insertion_sort (int *array, size_t len);
+void insertion_sort_unoptimised (int *array, size_t len);
+void insertion_sort_optimised (int *array, size_t len);
+void insertion_sort_binsearch (int *array, size_t len);
 
 void qsort_median (int *array, size_t len);
 void qsort_central (int *array, size_t len);

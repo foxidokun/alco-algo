@@ -5,8 +5,13 @@
 #include <sys/time.h>
 #include "sorts.h"
 
-#include "enkiTS/src/TaskScheduler.h"
+#define TEST
+
+#ifdef TEST
 #include "tests.h"
+#else
+#include "enkiTS/src/TaskScheduler.h"
+#endif
 
 const int ERROR = -1;
 const int ITERATION_NUM = 5;
@@ -17,11 +22,10 @@ int *gen_rand_array(size_t len);
 // ---------------------------------------------------------------------------------------------------------------------
 // ---------------------------------------------------------------------------------------------------------------------
 
-
 int main () {
 #ifdef TEST
     test_sorts();
-#endif
+#else
     enki::TaskScheduler g_TS;
     g_TS.Initialize();
 
@@ -29,7 +33,9 @@ int main () {
         for (size_t len = 1000 + range.start * 10000; len <= 10000 * range.end; len += 10000) {
             int *array = gen_rand_array(len);
 
-            printf("Insertion Sort,%zu,%ld\n", len, bench_sorting_algo(array, len, insertion_sort));
+            printf("Insertion Sort Op,%zu,%ld\n", len, bench_sorting_algo(array, len, insertion_sort_optimised));
+            printf("Insertion Sort Unop,%zu,%ld\n", len, bench_sorting_algo(array, len, insertion_sort_unoptimised));
+            printf("Insertion Sort BSearch,%zu,%ld\n", len, bench_sorting_algo(array, len, insertion_sort_binsearch));
             printf("Selection Sort,%zu,%ld\n", len, bench_sorting_algo(array, len, selection_sort));
             printf("Bubble Sort,%zu,%ld\n",    len, bench_sorting_algo(array, len, bubble_sort));
             fflush(stdout);
@@ -58,6 +64,8 @@ int main () {
     g_TS.AddTaskSetToPipe( &nlogn_sorts_tests );
 
     g_TS.WaitforAll();
+
+#endif
 }
 
 

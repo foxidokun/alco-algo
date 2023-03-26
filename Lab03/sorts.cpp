@@ -10,6 +10,7 @@ static void qsort_custom (int *array, size_t len, pivot_func_t piv_func);
 static void merge_sort (int *array, size_t len, int *buf);
 static void merge_arrays(int *left, int *right, size_t left_len, size_t right_len, int *buf);
 static void swap (int *array, size_t i, size_t j);
+static int find_index(const int *arr, int len, int value);
 
 // ---------------------------------------------------------------------------------------------------------------------
 
@@ -41,13 +42,39 @@ void selection_sort (int *array, size_t len) {
 
 // ---------------------------------------------------------------------------------------------------------------------
 
-void insertion_sort (int *array, size_t len) {
+void insertion_sort_unoptimised (int *array, size_t len) {
     for (size_t i = 1; i < len; ++i) {
         size_t j = i;
         while (j > 0 && array[j-1] > array[j]) {
             swap(array, j-1, j);
             j--;
         }
+    }
+}
+
+void insertion_sort_optimised (int *array, size_t len) {
+    for (size_t i = 0; i < len; ++i) {
+        size_t j = i;
+        int insert_val = array[i];
+        while (j > 0 && array[j-1] > insert_val) {
+            array[j] = array[j-1];
+            j--;
+        }
+
+        array[j] = insert_val;
+    }
+}
+
+void insertion_sort_binsearch (int *array, size_t len) {
+    for (size_t i = 0; i < len; ++i) {
+        int insert_val = array[i];
+        size_t ins_pos = (size_t) find_index(array, i+1, insert_val);
+
+        for (int j = i; j > ins_pos; --j) {
+            array[j] = array[j-1];
+        }
+
+        array[ins_pos] = insert_val;
     }
 }
 
@@ -243,4 +270,25 @@ static void swap (int *array, size_t i, size_t j) {
     int tmp  = array[i];
     array[i] = array[j];
     array[j] = tmp;
+}
+
+// ---------------------------------------------------------------------------------------------------------------------
+
+static int find_index(const int *arr, int len, int value) {
+    // Lower and upper bounds
+    int start = 0;
+    int end = len - 1;
+    // Traverse the search space
+    while (start <= end) {
+        int mid = (start + end) / 2;
+        // If value is found
+        if (arr[mid] == value)
+            return mid;
+        else if (arr[mid] < value)
+            start = mid + 1;
+        else
+            end = mid - 1;
+    }
+    // Return insert position
+    return end + 1;
 }
