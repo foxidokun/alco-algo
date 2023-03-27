@@ -4,6 +4,7 @@
 #include <string.h>
 #include <sys/time.h>
 #include "sorts.h"
+#include <algorithm>
 
 //#define TEST
 
@@ -17,7 +18,12 @@ const int ERROR = -1;
 const int ITERATION_NUM = 5;
 
 long bench_sorting_algo (const int * orig_array, size_t len, sort_func_t sort_algo);
+
 int *gen_rand_array(size_t len);
+int *gen_equal_array(size_t len);
+int *gen_lot_same_increasing_array(size_t len);
+int *gen_zebra_array(size_t len);
+int *gen_u_shape_array(size_t len);
 
 // ---------------------------------------------------------------------------------------------------------------------
 // ---------------------------------------------------------------------------------------------------------------------
@@ -45,28 +51,61 @@ int main () {
 //    });
 
 //    enki::TaskSet nlogn_sorts_tests(20, []( enki::TaskSetPartition range, uint32_t) {
-        for (size_t len = 1000 + 100000 * 0; len <= 500000 * 20; len += 500000) {
-            int *array = gen_rand_array(len);
+//        for (size_t len = 1000 + 100000 * 0; len <= 500000 * 20; len += 500000) {
+//            int *array = gen_equal_array(len);
+//
+//            printf("Quick Median Sort :: EQUAL,%zu,%ld\n", len, bench_sorting_algo(array, len, qsort_median));
+//            printf("Quick Central Sort :: EQUAL,%zu,%ld\n", len, bench_sorting_algo(array, len, qsort_central));
+//            printf("Quick Random Sort :: EQUAL,%zu,%ld\n", len, bench_sorting_algo(array, len, qsort_random));
+//
+////            printf("Merge Sort #0,%zu,%ld\n", len, bench_sorting_algo(array, len, merge_sort<0>));
+////            printf("Merge Sort #4,%zu,%ld\n", len, bench_sorting_algo(array, len, merge_sort<4>));
+////            printf("Merge Sort #8,%zu,%ld\n", len, bench_sorting_algo(array, len, merge_sort<8>));
+////            printf("Merge Sort #16,%zu,%ld\n", len, bench_sorting_algo(array, len, merge_sort<16>));
+////            printf("Merge Sort #32,%zu,%ld\n", len, bench_sorting_algo(array, len, merge_sort<32>));
+////            printf("Merge Sort #64,%zu,%ld\n", len, bench_sorting_algo(array, len, merge_sort<64>));
+////            printf("Merge Sort #128,%zu,%ld\n", len, bench_sorting_algo(array, len, merge_sort<128>));
+////            printf("Merge Sort #256,%zu,%ld\n", len, bench_sorting_algo(array, len, merge_sort<256>));
+////            printf("Merge Sort #512,%zu,%ld\n", len, bench_sorting_algo(array, len, merge_sort<512>));
+//
+////            printf("Radix Sort,%zu,%ld\n", len, bench_sorting_algo(array, len, radix_sort));
+//
+//            fflush(stdout);
+//            free (array);
+//        }
+//
+//    for (size_t len = 1000 + 100000 * 0; len <= 500000 * 20; len += 500000) {
+//        int *array = gen_lot_same_increasing_array(len);
+//
+//        printf("Quick Median Sort :: LOTSAME,%zu,%ld\n", len, bench_sorting_algo(array, len, qsort_median));
+//        printf("Quick Central Sort :: LOTSAME,%zu,%ld\n", len, bench_sorting_algo(array, len, qsort_central));
+//        printf("Quick Random Sort :: LOTSAME,%zu,%ld\n", len, bench_sorting_algo(array, len, qsort_random));
+//
+//        fflush(stdout);
+//        free (array);
+//    }
+//
+//    for (size_t len = 1000 + 100000 * 0; len <= 500000 * 20; len += 500000) {
+//        int *array = gen_zebra_array(len);
+//
+//        printf("Quick Median Sort :: ZEBRA,%zu,%ld\n", len, bench_sorting_algo(array, len, qsort_median));
+//        printf("Quick Central Sort :: ZEBRA,%zu,%ld\n", len, bench_sorting_algo(array, len, qsort_central));
+//        printf("Quick Random Sort :: ZEBRA,%zu,%ld\n", len, bench_sorting_algo(array, len, qsort_random));
+//
+//        fflush(stdout);
+//        free (array);
+//    }
 
-//            printf("Quick Median Sort,%zu,%ld\n", len, bench_sorting_algo(array, len, qsort_median));
-//            printf("Quick Central Sort,%zu,%ld\n", len, bench_sorting_algo(array, len, qsort_central));
-//            printf("Quick Random Sort,%zu,%ld\n", len, bench_sorting_algo(array, len, qsort_random));
+    for (size_t len = 1000 + 100000 * 0; len <= 50000 * 20; len += 50000) {
+        int *array = gen_u_shape_array(len);
 
-//            printf("Merge Sort #0,%zu,%ld\n", len, bench_sorting_algo(array, len, merge_sort<0>));
-//            printf("Merge Sort #4,%zu,%ld\n", len, bench_sorting_algo(array, len, merge_sort<4>));
-//            printf("Merge Sort #8,%zu,%ld\n", len, bench_sorting_algo(array, len, merge_sort<8>));
-//            printf("Merge Sort #16,%zu,%ld\n", len, bench_sorting_algo(array, len, merge_sort<16>));
-//            printf("Merge Sort #32,%zu,%ld\n", len, bench_sorting_algo(array, len, merge_sort<32>));
-//            printf("Merge Sort #64,%zu,%ld\n", len, bench_sorting_algo(array, len, merge_sort<64>));
-            printf("Merge Sort #128,%zu,%ld\n", len, bench_sorting_algo(array, len, merge_sort<128>));
-            printf("Merge Sort #256,%zu,%ld\n", len, bench_sorting_algo(array, len, merge_sort<256>));
-            printf("Merge Sort #512,%zu,%ld\n", len, bench_sorting_algo(array, len, merge_sort<512>));
+        printf("Quick Median Sort :: USHAPE,%zu,%ld\n", len, bench_sorting_algo(array, len, qsort_median));
+        printf("Quick Central Sort :: USHAPE,%zu,%ld\n", len, bench_sorting_algo(array, len, qsort_central));
+        printf("Quick Random Sort :: USHAPE,%zu,%ld\n", len, bench_sorting_algo(array, len, qsort_random));
 
-//            printf("Radix Sort,%zu,%ld\n", len, bench_sorting_algo(array, len, radix_sort));
-
-            fflush(stdout);
-            free (array);
-        }
+        fflush(stdout);
+        free (array);
+    }
 //    });
 
 //    g_TS.AddTaskSetToPipe( &quadratic_sorts_tests );
@@ -110,6 +149,46 @@ int *gen_rand_array(size_t len) {
 
     for (size_t i = 0; i < len; ++i) {
         array[i] = rand();
+    }
+
+    return array;
+}
+
+int *gen_equal_array(size_t len) {
+    int *array = (int *) calloc(len, sizeof (int));
+
+    for (size_t i = 0; i < len; ++i) {
+        array[i] = 420228;
+    }
+
+    return array;
+}
+
+int *gen_lot_same_increasing_array(size_t len) {
+    int *array = (int *) calloc(len, sizeof (int));
+
+    for (size_t i = 0; i < len; ++i) {
+        array[i] = (int) i / 8;
+    }
+
+    return array;
+}
+
+int *gen_zebra_array(size_t len) {
+    int *array = (int *) calloc(len, sizeof (int));
+
+    for (size_t i = 0; i < len; ++i) {
+        array[i] = (int) i % 8;
+    }
+
+    return array;
+}
+
+int *gen_u_shape_array(size_t len) {
+    int *array = (int *) calloc(len, sizeof (int));
+
+    for (size_t i = 0; i < len; ++i) {
+        array[i] = (int) std::max(i, len - i - 1);
     }
 
     return array;
