@@ -7,7 +7,6 @@ typedef size_t (*pivot_func_t)(int *array, size_t len);
 
 static void qsort_custom (int *array, size_t len, pivot_func_t piv_func);
 
-static void merge_sort (int *array, size_t len, int *buf);
 static void merge_arrays(int *left, int *right, size_t left_len, size_t right_len, int *buf);
 static void swap (int *array, size_t i, size_t j);
 static int find_index(const int *arr, int len, int value);
@@ -125,13 +124,6 @@ void qsort_random (int *array, size_t len) {
     qsort_custom(array, len, pivfunc);
 }
 
-// ---------------------------------------------------------------------------------------------------------------------
-
-void merge_sort (int *array, size_t len) {
-    int *buf = (int *) calloc(len, sizeof(int));
-    merge_sort(array, len, buf);
-    free (buf);
-}
 
 // ---------------------------------------------------------------------------------------------------------------------
 
@@ -219,7 +211,7 @@ static void qsort_custom (int *array, size_t len, pivot_func_t piv_func) {
 
 // ---------------------------------------------------------------------------------------------------------------------
 
-static void merge_sort (int *array, size_t len, int *buf) {
+void merge_sort (int *array, size_t len, int *buf, unsigned int optimisation_switch_size) {
     if (len == 1) { return; }
 
     if (len == 2) {
@@ -230,9 +222,14 @@ static void merge_sort (int *array, size_t len, int *buf) {
         return;
     }
 
+    if (len <= optimisation_switch_size) {
+        insertion_sort_optimised(array, len);
+        return;
+    }
+
     size_t half = len/2;
-    merge_sort(array, half, buf);
-    merge_sort(array + half, len - half, buf);
+    merge_sort(array, half, buf, optimisation_switch_size);
+    merge_sort(array + half, len - half, buf, optimisation_switch_size);
 
     merge_arrays(array, array+half, half, len-half, buf);
     memcpy(array, buf, len * sizeof(int));
