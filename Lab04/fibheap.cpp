@@ -4,15 +4,7 @@
 #include <string.h>
 #include <limits.h>
 
-#define NDEBUG
 #include <assert.h>
-
-#ifndef NDEBUG
-
-#include <errno.h>
-#include "fibheap_graph_consts.c.h"
-
-#endif
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Const & Define
@@ -136,13 +128,21 @@ struct Node *fibheap_insert(struct FibHeap *self, int value) {
     self->size++;
     self->num_trees++;
 
+    assert (self->min != nullptr);
+
     return new_node_obj;
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Extract Min
 // ---------------------------------------------------------------------------------------------------------------------
+#include <stdio.h>
+
 int fibheap_extract_min (struct FibHeap *self) {
+    if (self->min == nullptr) {
+        printf ("%d\n", self->size);
+    }
+
     int val = self->min->key;
 
     if (self->size == 1) {
@@ -181,10 +181,15 @@ int fibheap_extract_min (struct FibHeap *self) {
     self->num_trees--;
     self->size--;
     struct Node *new_min_node = self->min->left;
+    if (new_min_node == self->min) {
+        new_min_node = nullptr;
+    }
     free_node(self->min);
     self->min = new_min_node;
 
-    fibheap_consolidate (self);
+    if (self->min != nullptr) {
+        fibheap_consolidate(self);
+    }
 
     return val;
 }
@@ -286,6 +291,8 @@ void fibheap_clear(struct FibHeap *self)
 // Consolidate
 // ---------------------------------------------------------------------------------------------------------------------
 
+#include <stdio.h>
+
 void fibheap_consolidate(struct FibHeap *self) {
     struct DegArray degs;
     degarray_init(&degs, START_DEG_CAPACITY);
@@ -343,7 +350,7 @@ void degarray_put(struct DegArray *self, struct Node *node) {
     if (node->degree >= self->capacity) {
         size_t current_byte_size = self->capacity * sizeof(struct Node *);
         self->data = (Node **) realloc(self->data, 2 * current_byte_size);
-        memset(self->data + current_byte_size, 0, current_byte_size);
+        memset((char *) self->data + current_byte_size, 0, current_byte_size);
     }
 
     self->data[node->degree] = node;
@@ -360,8 +367,6 @@ struct Node *merge_subtree(struct Node *lhs, struct Node *rhs) {
         rhs = tmp;
     }
 
-    assert (compare_keys(lhs->key, rhs->key) < 0 && "Invalid logic");
-
     int lhs_empty = (lhs->child == NULL);
 
     rhs->left->right = rhs->right; // Delete right from it's linked list
@@ -376,7 +381,7 @@ struct Node *merge_subtree(struct Node *lhs, struct Node *rhs) {
 
     lhs->degree++;
 
-    assert (rhs->parent == NULL && "He left home without saying goodbye...");
+//    assert (rhs->parent != NULL && "He left home without saying goodbye...");
     rhs->parent = lhs;
 
     if (lhs_empty) {

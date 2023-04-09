@@ -58,7 +58,7 @@ void test_sorts () {
     _TEST(test_sort_func(qsort_median));
     _TEST(test_sort_func(qsort_random));
 
-    _TEST(test_sort_func(merge_sort));
+    _TEST(test_sort_func(merge_sort<0>));
 
     _TEST(test_sort_func(radix_sort));
 
